@@ -55,6 +55,16 @@ class MarkdownToHTML {
       `pregunta-${questionIndex}-back.html`
     );
 
+    // Crear una estructura HTML completa con el head y el body
+    const fullFrontHTML = this.wrapInHTMLStructure(
+      frontHTML,
+      `Pregunta ${questionIndex} - Front`
+    );
+    const fullBackHTML = this.wrapInHTMLStructure(
+      backHTML,
+      `Pregunta ${questionIndex} - Back`
+    );
+
     console.log(
       `[markdownToHTML] - Guardando front de pregunta ${questionIndex} en ${frontFileName}`
     );
@@ -63,13 +73,40 @@ class MarkdownToHTML {
     );
 
     await Promise.all([
-      fs.writeFile(frontFileName, frontHTML),
-      fs.writeFile(backFileName, backHTML),
+      fs.writeFile(frontFileName, fullFrontHTML),
+      fs.writeFile(backFileName, fullBackHTML),
     ]);
 
     console.log(
       `[markdownToHTML] - Archivos HTML para pregunta ${questionIndex} guardados exitosamente.`
     );
+  }
+
+  // Método para envolver el contenido HTML en una estructura completa de HTML con un <head> y <body>
+  wrapInHTMLStructure(content, title) {
+    return `
+      <!DOCTYPE html>
+      <html lang="es">
+      <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>${title}</title>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/styles/default.min.css">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/highlight.min.js"></script>
+        <script>hljs.highlightAll();</script>
+        <style>
+          body { font-family: Arial, sans-serif; margin: 20px; }
+          pre { background-color: #f5f5f5; padding: 10px; border-radius: 4px; }
+          code { font-size: 14px; }
+          h1, h2 { color: #333; }
+          .hljs { background: #f5f5f5; }
+        </style>
+      </head>
+      <body>
+        ${content}
+      </body>
+      </html>
+    `;
   }
 
   // Proceso principal para convertir Markdown a HTML por cada pregunta
