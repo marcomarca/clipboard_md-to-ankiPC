@@ -10,6 +10,7 @@ Thumbs.db
 # Ignorar directorios de dependencias y módulos
 /node_modules
 /bower_components
+/output
 
 # Ignorar archivos de compilación y construcción
 /dist
