@@ -1,16 +1,8 @@
 // src/markdownToHTML.js
 import { marked } from "marked";
-import highlight from "highlight.js";
 import fs from "fs/promises";
 import path from "path";
-
-// Configuramos marked para usar highlight.js
-marked.setOptions({
-  highlight: (code, lang) => {
-    return highlight.highlightAuto(code, [lang]).value;
-  },
-  langPrefix: "hljs language-", // Para que el CSS de highlight.js funcione correctamente.
-});
+import highlighter from "./highlighter.js"; // Importamos el nuevo módulo de preprocesado
 
 class MarkdownToHTML {
   constructor() {
@@ -80,6 +72,10 @@ class MarkdownToHTML {
     console.log(
       `[markdownToHTML] - Archivos HTML para pregunta ${questionIndex} guardados exitosamente.`
     );
+
+    // Aplicamos el resaltado de código a los archivos HTML guardados
+    await highlighter.highlightHTML(frontFileName, frontFileName); // Procesar y sobrescribir
+    await highlighter.highlightHTML(backFileName, backFileName); // Procesar y sobrescribir
   }
 
   // Método para envolver el contenido HTML en una estructura completa de HTML con un <head> y <body>
@@ -91,9 +87,8 @@ class MarkdownToHTML {
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>${title}</title>
+        <!-- Incluir el CSS de highlight.js -->
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/styles/default.min.css">
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/highlight.min.js"></script>
-        <script>hljs.highlightAll();</script>
         <style>
           body { font-family: Arial, sans-serif; margin: 20px; }
           pre { background-color: #f5f5f5; padding: 10px; border-radius: 4px; }
