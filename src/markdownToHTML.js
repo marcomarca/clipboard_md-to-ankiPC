@@ -2,7 +2,8 @@
 import { marked } from "marked";
 import fs from "fs/promises";
 import path from "path";
-import highlighter from "./highlighter.js"; // Importamos el nuevo módulo de preprocesado
+import highlighter from "./highlighter.js";
+import { highlightCSS } from "./highlightCSS.js"; // Importamos el CSS local
 
 class MarkdownToHTML {
   constructor() {
@@ -87,9 +88,11 @@ class MarkdownToHTML {
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>${title}</title>
-        <!-- Incluir el CSS de highlight.js -->
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/styles/default.min.css">
         <style>
+          /* CSS de Highlight.js */
+          ${highlightCSS}
+
+          /* Estilos personalizados */
           body { font-family: Arial, sans-serif; margin: 20px; }
           pre { background-color: #f5f5f5; padding: 10px; border-radius: 4px; }
           code { font-size: 14px; }
