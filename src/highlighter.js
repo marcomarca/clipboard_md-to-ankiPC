@@ -1,6 +1,5 @@
 // src/highlighter.js
 import fs from "fs/promises";
-import path from "path";
 import hljs from "highlight.js";
 
 class Highlighter {
@@ -8,19 +7,28 @@ class Highlighter {
     console.log("[highlighter] - Módulo de preprocesamiento de HTML iniciado.");
   }
 
+  // Método para resaltar los bloques de código dentro del HTML sin escapar caracteres innecesarios
   async highlightHTML(inputFile, outputFile) {
     try {
       console.log(`[highlighter] - Leyendo contenido del archivo ${inputFile}`);
       let htmlContent = await fs.readFile(inputFile, "utf-8");
 
-      // Usar una expresión regular para encontrar todos los bloques <pre><code> y resaltarlos
+      // Usar una expresión regular para encontrar todos los bloques <pre><code>
       htmlContent = htmlContent.replace(
         /<pre><code class="language-(.*?)">(.*?)<\/code><\/pre>/gs,
         (match, lang, code) => {
+          const unescapedCode = code
+            .replace(/&gt;/g, ">")
+            .replace(/&lt;/g, "<")
+            .replace(/&#39;/g, "'")
+            .replace(/&quot;/g, '"')
+            .replace(/&amp;/g, "&");
+
           const validLanguage = hljs.getLanguage(lang) ? lang : "plaintext";
-          const highlightedCode = hljs.highlight(code, {
+          const highlightedCode = hljs.highlight(unescapedCode, {
             language: validLanguage,
           }).value;
+
           return `<pre><code class="hljs language-${validLanguage}">${highlightedCode}</code></pre>`;
         }
       );
