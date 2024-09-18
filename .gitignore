@@ -1,0 +1,28 @@
+# Ignorar archivos y directorios generados por el sistema operativo
+.DS_Store
+Thumbs.db
+
+# Ignorar archivos de respaldo y temporales
+*~
+*.bak
+*.swp
+
+# Ignorar directorios de dependencias y módulos
+/node_modules
+/bower_components
+
+# Ignorar archivos de compilación y construcción
+/dist
+/build
+/out
+
+# Ignorar archivos de configuración local
+.env
+.env.local
+.env.*.local
+
+# Ignorar archivos de registro y salida
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
