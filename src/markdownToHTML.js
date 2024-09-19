@@ -14,7 +14,29 @@ class MarkdownToHTML {
 
   // Método para dividir el contenido en preguntas por el marcador '# Pregunta X'
   splitIntoQuestions(markdownContent) {
-    const questions = markdownContent.split(/\n# Pregunta \d+/).filter(Boolean); // Divide el contenido por cada pregunta
+    // Limpiamos cualquier texto que aparezca antes del primer '# Pregunta X'
+    const questionPattern = /# Pregunta \d+/;
+    const startIndex = markdownContent.search(questionPattern);
+
+    // Si no se encuentra ninguna pregunta, lanzar una advertencia y devolver un array vacío
+    if (startIndex === -1) {
+      console.warn(
+        "[markdownToHTML] - No se encontró ninguna pregunta en el contenido."
+      );
+      return [];
+    }
+
+    // Cortamos el contenido hasta la primera pregunta
+    const cleanedMarkdown = markdownContent.substring(startIndex);
+
+    // Dividimos por cada pregunta
+    const questions = cleanedMarkdown.split(/\n# Pregunta \d+/).filter(Boolean);
+
+    // Removemos el texto final después de `---` en la última pregunta, si existe
+    questions[questions.length - 1] = questions[questions.length - 1]
+      .split("---")[0]
+      .trim();
+
     console.log(
       `[markdownToHTML] - Se han detectado ${questions.length} preguntas.`
     );
